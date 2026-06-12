@@ -74,4 +74,5 @@ To run the test suite:
 
 Bash
 ./vendor/bin/sail artisan test
+
 Developed as a technical showcase by Oğuzhan Emet.
