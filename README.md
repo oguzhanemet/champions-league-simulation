@@ -1,58 +1,77 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🏆 Champions League Simulation
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![PHPUnit](https://img.shields.io/badge/PHPUnit-3776AB?style=for-the-badge&logo=php&logoColor=white)
 
-## About Laravel
+A full-stack web application that simulates a Champions League group stage tournament. Built with **Laravel** and **Vue 3 (Composition API)**, this project not only meets the core requirements but extends them with advanced statistical algorithms, dynamic architectures, and interactive UI features.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ✨ Standout Features & "Extras" Implemented
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+This project goes beyond a simple random number generator. It is engineered with scalability and realism in mind:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+* 🎯 **Poisson Distribution Match Engine:** Match results are not purely random. The simulation uses Poisson distribution mathematics factoring in `attack_strength`, `defense_strength`, and a `10% Home Advantage` multiplier. A weaker team *can* upset a stronger team, but statistically, the odds reflect real-world football dynamics.
+* 🔮 **Monte Carlo Championship Predictions:** Championship odds (triggered in the final 3 weeks) are calculated by simulating the remaining fixtures **10,000 times** in the background. It accounts for current points, remaining matches, and goal differences to provide highly accurate, probabilistic forecasting.
+* ♾️ **Dynamic "N-Team" Architecture:** *“Team count should not break the fixtures.”* The Round-Robin fixture generation algorithm is fully dynamic. You can add 5, 6, or 10 teams. The system automatically calculates the required weeks and gracefully handles "Bye" weeks for odd numbers of teams without breaking.
+* ✏️ **Live Score Editing (Bonus Requirement):** Users can click on any played match score to edit it inline. The backend automatically catches this, purges the current standings, and cleanly recalculates the entire league table from scratch based on the new truths.
+* 🤖 **Play All Automation (Bonus Requirement):** A single click simulates all remaining fixtures instantly, updates the league table, and calculates the final champion.
+* 🔄 **Full CRUD & State Management:** Add new teams on the fly or remove existing ones. The UI reacts instantly without page reloads.
 
-## Learning Laravel
+## 🏗️ Technical Architecture
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+* **Backend:** Laravel (RESTful API, Service Repository Pattern). Complex logic is decoupled into dedicated services (`FixtureService`, `MatchSimulationService`, `ChampionshipPredictionService`).
+* **Frontend:** Vue 3 `<script setup>`, Axios for API calls, completely reactive state management, and Tailwind CSS for a responsive, polished UI.
+* **Database:** Relational schema handling Teams, Fixtures, and Standings.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🚀 Getting Started
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+This project is fully Dockerized using Laravel Sail for a zero-headache setup.
 
-## Agentic Development
+### Prerequisites
+* Docker & Docker Desktop
+* Composer
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Installation
 
-```bash
-composer require laravel/boost --dev
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/oguzhanemet/champions-league-simulation.git](https://github.com/oguzhanemet/champions-league-simulation.git)
+   cd champions-league-simulation
+Install Composer Dependencies:
 
-php artisan boost:install
-```
+Bash
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$(pwd):/var/www/html" \
+    -w /var/www/html \
+    laravelsail/php8.2-composer:latest \
+    composer install --ignore-platform-reqs
+Setup Environment:
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Bash
+cp .env.example .env
+Start Laravel Sail (Docker):
 
-## Contributing
+Bash
+./vendor/bin/sail up -d
+Generate App Key & Migrate Database:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Bash
+./vendor/bin/sail artisan key:generate
+./vendor/bin/sail artisan migrate:fresh --seed
+Install NPM Packages & Build:
 
-## Code of Conduct
+Bash
+./vendor/bin/sail npm install
+./vendor/bin/sail npm run build
+The application is now live at: http://localhost
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+🧪 Automated Unit Testing
+The project includes automated feature tests to ensure the integrity of the simulation, fixture generation, and dynamic team management.
 
-## Security Vulnerabilities
+To run the test suite:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Bash
+./vendor/bin/sail artisan test
+Developed as a technical showcase by Oğuzhan Emet.
