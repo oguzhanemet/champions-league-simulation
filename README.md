@@ -35,44 +35,91 @@ This project is fully Dockerized using Laravel Sail for a zero-headache setup.
 ### Installation
 
 1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/oguzhanemet/champions-league-simulation.git](https://github.com/oguzhanemet/champions-league-simulation.git)
-   cd champions-league-simulation
-Install Composer Dependencies:
+```bash
+git clone [https://github.com/oguzhanemet/champions-league-simulation.git](https://github.com/oguzhanemet/champions-league-simulation.git)
+cd champions-league-simulation
+```
 
-Bash
+2. **Install Composer Dependencies:**
+*(Using an isolated Docker container to ensure PHP 8.4 compatibility)*
+```bash
 docker run --rm \
     -u "$(id -u):$(id -g)" \
     -v "$(pwd):/var/www/html" \
     -w /var/www/html \
-    laravelsail/php8.2-composer:latest \
+    laravelsail/php84-composer:latest \
     composer install --ignore-platform-reqs
-Setup Environment:
+```
 
-Bash
+3. **Setup Environment & Database Credentials:**
+*(This block automatically creates your .env file and injects the default Laravel Sail database credentials)*
+```bash
 cp .env.example .env
-Start Laravel Sail (Docker):
+echo "DB_CONNECTION=mysql" >> .env
+echo "DB_HOST=mysql" >> .env
+echo "DB_PORT=3306" >> .env
+echo "DB_DATABASE=champions_league" >> .env
+echo "DB_USERNAME=sail" >> .env
+echo "DB_PASSWORD=password" >> .env
+```
 
-Bash
+4. **Start Laravel Sail (Docker):**
+```bash
 ./vendor/bin/sail up -d
-Generate App Key & Migrate Database:
+```
 
-Bash
+5. **Generate App Key & Migrate Database:**
+*(Note: If you receive a "Connection refused" error on migration, simply wait 5 seconds for MySQL to fully initialize and run the command again.)*
+```bash
 ./vendor/bin/sail artisan key:generate
 ./vendor/bin/sail artisan migrate:fresh --seed
-Install NPM Packages & Build:
+```
 
-Bash
+6. **Install NPM Packages & Build:**
+```bash
 ./vendor/bin/sail npm install
 ./vendor/bin/sail npm run build
-The application is now live at: http://localhost
+```
 
-🧪 Automated Unit Testing
+**The application is now live at:** `http://localhost`
+
+---
+
+### 🛠️ Troubleshooting: Port Conflicts
+
+If you have local services (like MySQL, Redis, or another web server) running in the background, Docker might throw a **"port is already allocated"** error when running `./vendor/bin/sail up -d`. 
+
+You can easily bypass these conflicts by assigning alternative ports. Run the relevant commands below to update your `.env` file, then restart Sail (`./vendor/bin/sail down` and `./vendor/bin/sail up -d`):
+
+**If Web Port (80) is occupied:**
+```bash
+echo "APP_PORT=8000" >> .env
+```
+
+**If MySQL Port (3306) is occupied:**
+```bash
+echo "FORWARD_DB_PORT=3307" >> .env
+```
+
+**If Redis Port (6379) is occupied:**
+```bash
+echo "FORWARD_REDIS_PORT=6380" >> .env
+```
+
+**If Vite/Vue Port (5173) is occupied:**
+```bash
+echo "VITE_PORT=5174" >> .env
+```
+
+---
+
+## 🧪 Automated Unit Testing
 The project includes automated feature tests to ensure the integrity of the simulation, fixture generation, and dynamic team management.
 
 To run the test suite:
 
-Bash
+```bash
 ./vendor/bin/sail artisan test
+```
 
 Developed as a technical showcase by Oğuzhan Emet.
